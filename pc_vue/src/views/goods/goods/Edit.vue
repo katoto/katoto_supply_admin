@@ -46,7 +46,7 @@
         <h2 class="content-title"><i class="el-icon-picture-outline"></i> 商品图册</h2>
         <el-upload
           class="mb-15"
-          action="utils/upload"
+          action="/api/utils/upload"
           list-type="picture-card"
           :file-list="fileList"
           :on-remove="handleUploadRemove"
@@ -124,7 +124,7 @@
         const res = await this.$api.goods.get(params);
         this.goodsForm = res;
         const images = JSON.parse(res.imagesJsonStr) || [];
-        this.fileList = images.map(item => ({ url: item }));
+        this.fileList = images.map((item) => ({ url: item }));
       },
       async getCategoryDropdownList() {
         this.categoryList = await this.$api.goodsCategory.getDropdownList();

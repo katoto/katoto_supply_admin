@@ -45,7 +45,7 @@ class UtilsUploadController extends Controller {
 
             // 目标写入流
             part.pipe(writerStream);
-            result = `http://127.0.0.1:7001/public/upload/${fileName}`;
+            result = `https://katoto.cn/public/upload/${fileName}`;
           }
         } catch (err) {
           // 必须将上传的文件流消费掉，要不然浏览器响应会卡死

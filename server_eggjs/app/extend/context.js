@@ -57,6 +57,7 @@ module.exports = {
       });
     });
 
+    // 先关掉验证
     if (!verifyResult.verify) {
       this.verifyFail(401, verifyResult.message);
       return false;

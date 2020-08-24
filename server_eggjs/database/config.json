@@ -2,28 +2,28 @@
   "development": {
     "dialect": "mysql",
     "database": "weapp-vue-eggjs-shop-demo",
-    "host": "127.0.0.1",
+    "host": "39.107.28.114",
     "port": "3306",
     "username": "root",
-    "password": "209cfcfaf6",
+    "password": "you89mysql66",
     "timezone": "+08:00"
   },
   "test": {
     "dialect": "mysql",
     "database": "weapp-vue-eggjs-shop-demo",
-    "host": "127.0.0.1",
+    "host": "39.107.28.114",
     "port": "3306",
     "username": "root",
-    "password": "209cfcfaf6",
+    "password": "you89mysql66",
     "timezone": "+08:00"
   },
   "production": {
     "dialect": "mysql",
     "database": "weapp-vue-eggjs-shop-demo",
-    "host": "127.0.0.1",
+    "host": "39.107.28.114",
     "port": "3306",
     "username": "root",
-    "password": "209cfcfaf6",
+    "password": "you89mysql66",
     "timezone": "+08:00"
   }
 }

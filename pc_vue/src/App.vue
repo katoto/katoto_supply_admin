@@ -437,7 +437,8 @@
       },
       // 初始化消息通知
       async initNotice() {
-        const res = await this.$api.notice.overview();
+        // const res = await this.$api.notice.overview();
+        const res = {};
         const { count = 0, rows = [] } = res || {};
         this.noticeCount = count;
         this.noticeList = rows;

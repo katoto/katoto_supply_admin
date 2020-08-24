@@ -218,15 +218,16 @@
         this.getForWeek();
       },
       async getForDay() {
-        this.statusQtyMap = await this.$api.statistics.order.getForDay() || {};
+        // this.statusQtyMap = await this.$api.statistics.order.getForDay() || {};
+        this.statusQtyMap = {};
       },
       async getForWeek() {
         const chartOrderQtyDataRows = [];
         const chartOrderAmountDataRows = [];
         const chartGoodsQtyDataRows = [];
         const chartOrderReceiptAmountDataRows = [];
-        const res = await this.$api.statistics.order.getForWeek() || {};
-
+        // const res = await this.$api.statistics.order.getForWeek() || {};
+        const res = {};
         Object.entries(res).forEach((item) => {
           const { 0: day, 1: obj = {} } = item;
           const {

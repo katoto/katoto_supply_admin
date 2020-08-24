@@ -70,6 +70,9 @@ class GoodsCategoryService extends Service {
    */
   async getDropdownList(params = {}) {
     const { app } = this;
+    console.log(params)
+    console.log(params)
+    console.log(params)
     return await app.model.GoodsCategory.getList({
       ...params,
       attributes: ['uuid', 'name'],

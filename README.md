@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # weapp-vue-eggjs-shop-demo
 
 **:mega: 这么骚气且又臭又长的名字将来可能会改 :joy::joy:**
@@ -205,3 +206,7 @@ pc前端：**vue2 + vuex + vue-router + vue-cli3 + element-ui + ES6**
 [MIT](./LICENSE)
 
 Copyright (c) 2018-present, ruiyong-lee
+=======
+# katoto_supply_mobile
+uni-app 供应链前端（小程序+h5）
+>>>>>>> 303ccc78aa91635cc999e4a5707abad5f1f95d0d

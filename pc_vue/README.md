@@ -52,3 +52,11 @@ npm run build
 补充中...
 
 [vue]: https://cn.vuejs.org/
+
+appId
+wxeb98655bdfa04de3
+appSecret
+6baf5a2663ee293b050bfa157979df52
+
+
+遇到 报错TypeError: Cannot read property 'range' of null 重新安装一下。 
