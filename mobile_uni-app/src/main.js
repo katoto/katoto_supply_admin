@@ -12,12 +12,12 @@ Vue.config.productionTip = false;
 
 // 全局过滤器
 Object.entries(filters).forEach(([name, fn]) => {
-  Vue.filter(name, fn);
+    Vue.filter(name, fn);
 });
 
 App.mpType = 'app';
 
 const app = new Vue({
-  ...App,
+    ...App,
 });
 app.$mount();

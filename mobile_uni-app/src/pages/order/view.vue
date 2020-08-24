@@ -76,18 +76,18 @@
         <view class="content padding-tb-sm">
           <view class="flex padding-bottom-sm">
             <view class="flex-sub">商品金额</view>
-            <view class="flex-sub text-red text-right">￥{{order.totalAmount}}</view>
+            <view class="flex-sub text-red text-right">￥{{order.totalAmount || 0}}</view>
           </view>
           <view class="flex padding-bottom-sm">
             <view class="flex-sub">
               运费
-              <text class="text-sm text-gray">（满¥{{freeFreightAmount}}免运费）</text>
+              <text class="text-sm text-gray">（满¥{{freeFreightAmount || 0}}免运费）</text>
             </view>
-            <view class="flex-sub text-red text-right">+ ￥{{order.freightAmount}}</view>
+            <view class="flex-sub text-red text-right">+ ￥{{order.freightAmount || 0}}</view>
           </view>
           <view class="flex">
             <view class="flex-sub">加急费</view>
-            <view class="flex-sub text-red text-right">+ ￥{{order.deliveryTimeTypeSurcharge}}
+            <view class="flex-sub text-red text-right">+ ￥{{order.deliveryTimeTypeSurcharge || 0}}
             </view>
           </view>
         </view>
