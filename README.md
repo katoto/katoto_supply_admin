@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # weapp-vue-eggjs-shop-demo
 
 **:mega: 这么骚气且又臭又长的名字将来可能会改 :joy::joy:**
@@ -210,3 +211,7 @@ Copyright (c) 2018-present, ruiyong-lee
 # katoto_supply_mobile
 uni-app 供应链前端（小程序+h5）
 >>>>>>> 303ccc78aa91635cc999e4a5707abad5f1f95d0d
+=======
+# katoto_supply_admin
+supply admin 管理后台
+>>>>>>> de5ed521497f51444b51d34f26e3875c4d6531ca
