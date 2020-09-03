@@ -1,35 +1,37 @@
-'use strict';
-const _ = require('lodash');
-const fecha = require('fecha');
+"use strict";
+const _ = require("lodash");
+const fecha = require("fecha");
 
 // TODO Redis好像无法对消息持久化存储，这个到时候再看下怎么改进
 const handlers = {}; // 任务处理器map
 const events = {}; // 任务类型map
 const tasks = {}; // 任务列表
-const delayEventKeyPrefix = 'delay_event_'; // 定时任务key前缀
+const delayEventKeyPrefix = "delay_event_"; // 定时任务key前缀
 
-const TRANSACTION = Symbol('Application#transaction');
+const TRANSACTION = Symbol("Application#transaction");
+const md5 = require("blueimp-md5");
+const PAY_API_KEY = "Gho9V4VC2ttDwPxXHyJCOsJUcs8OXiUa";
 
 module.exports = {
   _,
-  dayFormat: '%Y-%m-%d',
-  dayTimeFormat: '%Y-%m-%d %H:%i:%s',
+  dayFormat: "%Y-%m-%d",
+  dayTimeFormat: "%Y-%m-%d %H:%i:%s",
 
   // 日期格式化
   formatToDay(date = new Date()) {
-    return fecha.format(date, 'YYYY-MM-DD');
+    return fecha.format(date, "YYYY-MM-DD");
   },
   formatToDayNoYear(date = new Date()) {
-    return fecha.format(date, 'MM-DD');
+    return fecha.format(date, "MM-DD");
   },
   formatToDayStart(date = new Date()) {
-    return fecha.format(date, 'YYYY-MM-DD 00:00:00');
+    return fecha.format(date, "YYYY-MM-DD 00:00:00");
   },
   formatToDayEnd(date = new Date()) {
-    return fecha.format(date, 'YYYY-MM-DD 23:59:59');
+    return fecha.format(date, "YYYY-MM-DD 23:59:59");
   },
   formatToDayTime(date = new Date()) {
-    return fecha.format(date, 'YYYY-MM-DD HH:mm:ss');
+    return fecha.format(date, "YYYY-MM-DD HH:mm:ss");
   },
 
   // 获取当前时间相差 count 天的时间
@@ -42,7 +44,7 @@ module.exports = {
 
   // 获取排序条件数组
   getSortInfo(sort) {
-    return _.isEmpty(sort) ? [['createdTime', 'DESC']] : sort;
+    return _.isEmpty(sort) ? [["createdTime", "DESC"]] : sort;
   },
   // create所需的一些公共字段
   getCrateInfo(creatorId, creatorName) {
@@ -56,8 +58,8 @@ module.exports = {
   // modify所需的一些公共字段
   getModifyInfo(modifyId, modifyName) {
     return {
-      lastModifierId: modifyId || 'system',
-      lastModifierName: modifyName || 'system',
+      lastModifierId: modifyId || "system",
+      lastModifierName: modifyName || "system",
     };
   },
 
@@ -77,19 +79,19 @@ module.exports = {
 
   // 单号生成，暂时是日期+6位
   async getBillNumber(prefix) {
-    const dateStr = fecha.format(new Date(), 'YYYYMMDD');
-    const key = `${prefix || 'B'}${dateStr}`;
-    const value = await this.redis.get('default').get(key) || 1;
+    const dateStr = fecha.format(new Date(), "YYYYMMDD");
+    const key = `${prefix || "B"}${dateStr}`;
+    const value = (await this.redis.get("default").get(key)) || 1;
 
-    await this.redis.get('default').setex(key, 3600 * 24, Number(value) + 1);
+    await this.redis.get("default").setex(key, 3600 * 24, Number(value) + 1);
 
-    return `${key}${String(value).padStart(6, '0')}`;
+    return `${key}${String(value).padStart(6, "0")}`;
   },
 
   // 检查update
   checkUpdate(arr, message) {
     if (arr.includes(0)) {
-      const error = new Error(message || '保存失败，请刷新后重试！');
+      const error = new Error(message || "保存失败，请刷新后重试！");
       error.status = 422;
       throw error;
     }
@@ -97,7 +99,7 @@ module.exports = {
   // 检查delete
   checkDelete(count, message) {
     if (!count) {
-      const error = new Error(message || '删除失败，请刷新后重试！');
+      const error = new Error(message || "删除失败，请刷新后重试！");
       error.status = 422;
       throw error;
     }
@@ -106,10 +108,10 @@ module.exports = {
   // 任务处理
   registerTaskHandler(type, handler) {
     if (!type) {
-      throw new Error('type不能为空');
+      throw new Error("type不能为空");
     }
     if (!_.isFunction(handler)) {
-      throw new Error('handler类型非function');
+      throw new Error("handler类型非function");
     }
     handlers[type] = handler;
     events[type] = true;
@@ -119,23 +121,27 @@ module.exports = {
     const key = `${delayEventKeyPrefix}${type}_${id}`;
     const taskKey = `${type}_${id}`;
 
-    this.redis.get('default').setex(key, delay, 'delay_task', err => {
+    this.redis.get("default").setex(key, delay, "delay_task", (err) => {
       if (err) {
-        return console.log('添加延迟任务失败：', err);
+        return console.log("添加延迟任务失败：", err);
       }
-      console.log('添加延迟任务成功');
+      console.log("添加延迟任务成功");
       tasks[taskKey] = body;
     });
   },
   // 订阅和处理延迟任务
   initDelayTask() {
     // 订阅
-    this.redis.get('subscribe').psubscribe('__keyevent@0__:expired');
+    this.redis.get("subscribe").psubscribe("__keyevent@0__:expired");
 
     // 处理
-    this.redis.get('subscribe').on('pmessage', (pattern, channel, message) => {
+    this.redis.get("subscribe").on("pmessage", (pattern, channel, message) => {
       // 匹配key
-      const result = message.match(new RegExp(`^${delayEventKeyPrefix}(${this._.keys(events).join('|')})_(\\S+)$`));
+      const result = message.match(
+        new RegExp(
+          `^${delayEventKeyPrefix}(${this._.keys(events).join("|")})_(\\S+)$`
+        )
+      );
 
       if (result) {
         const type = result[1];
@@ -155,5 +161,137 @@ module.exports = {
         }
       }
     });
+  },
+
+  // 预定义的一些工具函数
+  wx_getNonceStr() {
+    var text = "";
+    var possible =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (var i = 0; i < 16; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  },
+
+  wx_getPaySign(appId, timeStamp, nonceStr, packageId) {
+    var stringA =
+      "appId=" +
+      appId +
+      "&nonceStr=" +
+      nonceStr +
+      "&package=" +
+      packageId +
+      "&signType=MD5" +
+      "&timeStamp=" +
+      timeStamp;
+
+    var stringSignTemp = stringA + "&key=" + PAY_API_KEY;
+    var sign = md5(stringSignTemp).toUpperCase();
+    return sign;
+  },
+  wx_getTradeId(attach) {
+    var date = new Date().getTime().toString();
+    var text = "";
+    var possible = "0123456789";
+    for (var i = 0; i < 5; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    var tradeId = "ty_" + attach + "_" + date + text;
+    return tradeId;
+  },
+
+  wx_getPrePaySign(
+    appId,
+    attach,
+    productIntro,
+    mchId,
+    nonceStr,
+    notifyUrl,
+    openId,
+    tradeId,
+    ip,
+    price
+  ) {
+    var stringA =
+      "appid=" +
+      appId +
+      "&attach=" +
+      attach +
+      "&body=" +
+      productIntro +
+      "&mch_id=" +
+      mchId +
+      "&nonce_str=" +
+      nonceStr +
+      "&notify_url=" +
+      notifyUrl +
+      "&openid=" +
+      openId +
+      "&out_trade_no=" +
+      tradeId +
+      "&spbill_create_ip=" +
+      ip +
+      "&total_fee=" +
+      price +
+      "&trade_type=JSAPI";
+    var stringSignTemp = stringA + "&key=" + PAY_API_KEY;
+    console.log(stringSignTemp);
+    console.log("---------stringSignTemp------------");
+    var sign = md5(stringSignTemp).toUpperCase();
+    return sign;
+  },
+
+  wx_wxSendData(
+    appId,
+    attach,
+    productIntro,
+    mchId,
+    nonceStr,
+    notifyUrl,
+    openId,
+    tradeId,
+    ip,
+    price,
+    sign
+  ) {
+    const sendData =
+      "<xml>" +
+      "<appid>" +
+      appId +
+      "</appid>" +
+      "<attach>" +
+      attach +
+      "</attach>" +
+      "<body>" +
+      productIntro +
+      "</body>" +
+      "<mch_id>" +
+      mchId +
+      "</mch_id>" +
+      "<nonce_str>" +
+      nonceStr +
+      "</nonce_str>" +
+      "<notify_url>" +
+      notifyUrl +
+      "</notify_url>" +
+      "<openid>" +
+      openId +
+      "</openid>" +
+      "<out_trade_no>" +
+      tradeId +
+      "</out_trade_no>" +
+      "<spbill_create_ip>" +
+      ip +
+      "</spbill_create_ip>" +
+      "<total_fee>" +
+      price +
+      "</total_fee>" +
+      "<trade_type>JSAPI</trade_type>" +
+      "<sign>" +
+      sign +
+      "</sign>" +
+      "</xml>";
+    return sendData;
   },
 };

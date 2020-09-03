@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const Controller = require('../core/base_controller');
+const Controller = require("../core/base_controller");
 
 /**
  * Controller - 微信小程序
@@ -24,7 +24,9 @@ class WeappController extends Controller {
    */
   async getDefaultFreightPlan() {
     const { ctx } = this;
-    const freightPlan = await ctx.service.freightPlan.getDefault(ctx.request.body);
+    const freightPlan = await ctx.service.freightPlan.getDefault(
+      ctx.request.body
+    );
 
     this.success(freightPlan);
   }
@@ -44,7 +46,9 @@ class WeappController extends Controller {
    */
   async queryOrderBill() {
     const { ctx } = this;
-    const goodsOrderData = await ctx.service.goodsOrder.queryForWeapp(ctx.request.body);
+    const goodsOrderData = await ctx.service.goodsOrder.queryForWeapp(
+      ctx.request.body
+    );
 
     this.success(goodsOrderData);
   }
@@ -65,7 +69,7 @@ class WeappController extends Controller {
   async createBill() {
     const { ctx } = this;
     const rule = {
-      goodsOrder: 'object',
+      goodsOrder: "object",
     };
     ctx.validate(rule);
     const uuid = await ctx.service.goodsOrder.saveNew(ctx.request.body);
@@ -79,8 +83,8 @@ class WeappController extends Controller {
   async cancelBill() {
     const { ctx } = this;
     const rule = {
-      uuid: 'string',
-      version: 'number',
+      uuid: "string",
+      version: "number",
     };
     ctx.validate(rule);
     const uuid = await ctx.service.goodsOrder.cancel(ctx.request.body);
@@ -94,8 +98,8 @@ class WeappController extends Controller {
   async auditBill() {
     const { ctx } = this;
     const rule = {
-      uuid: 'string',
-      version: 'number',
+      uuid: "string",
+      version: "number",
     };
     ctx.validate(rule);
     const uuid = await ctx.service.goodsOrder.audit(ctx.request.body);
@@ -109,8 +113,8 @@ class WeappController extends Controller {
   async completeBill() {
     const { ctx } = this;
     const rule = {
-      uuid: 'string',
-      version: 'number',
+      uuid: "string",
+      version: "number",
     };
     ctx.validate(rule);
     const uuid = await ctx.service.goodsOrder.complete(ctx.request.body);
@@ -123,7 +127,9 @@ class WeappController extends Controller {
    */
   async getAddress() {
     const { ctx } = this;
-    const address = await ctx.service.user.customer.address.get(ctx.request.body);
+    const address = await ctx.service.user.customer.address.get(
+      ctx.request.body
+    );
 
     this.success(address);
   }
@@ -133,7 +139,9 @@ class WeappController extends Controller {
    */
   async getDefaultAddress() {
     const { ctx } = this;
-    const address = await ctx.service.user.customer.address.getDefault(ctx.request.body);
+    const address = await ctx.service.user.customer.address.getDefault(
+      ctx.request.body
+    );
 
     this.success(address);
   }
@@ -143,7 +151,9 @@ class WeappController extends Controller {
    */
   async setDefaultAddress() {
     const { ctx } = this;
-    const uuid = await ctx.service.user.customer.address.setDefault(ctx.request.body);
+    const uuid = await ctx.service.user.customer.address.setDefault(
+      ctx.request.body
+    );
 
     this.success(uuid);
   }
@@ -153,7 +163,9 @@ class WeappController extends Controller {
    */
   async deleteAddress() {
     const { ctx } = this;
-    const uuid = await ctx.service.user.customer.address.remove(ctx.request.body);
+    const uuid = await ctx.service.user.customer.address.remove(
+      ctx.request.body
+    );
 
     this.success(uuid);
   }
@@ -163,7 +175,9 @@ class WeappController extends Controller {
    */
   async getAddressList() {
     const { ctx } = this;
-    const addressList = await ctx.service.user.customer.address.getList(ctx.request.body);
+    const addressList = await ctx.service.user.customer.address.getList(
+      ctx.request.body
+    );
 
     this.success(addressList);
   }
@@ -174,10 +188,12 @@ class WeappController extends Controller {
   async saveNewAddress() {
     const { ctx } = this;
     const rule = {
-      address: 'object',
+      address: "object",
     };
     ctx.validate(rule);
-    const uuid = await ctx.service.user.customer.address.saveNew(ctx.request.body);
+    const uuid = await ctx.service.user.customer.address.saveNew(
+      ctx.request.body
+    );
 
     this.success(uuid);
   }
@@ -188,10 +204,12 @@ class WeappController extends Controller {
   async saveModifyAddress() {
     const { ctx } = this;
     const rule = {
-      address: 'object',
+      address: "object",
     };
     ctx.validate(rule);
-    const uuid = await ctx.service.user.customer.address.saveModify(ctx.request.body);
+    const uuid = await ctx.service.user.customer.address.saveModify(
+      ctx.request.body
+    );
 
     this.success(uuid);
   }
@@ -207,6 +225,38 @@ class WeappController extends Controller {
   }
 
   /**
+   * 获取商家运费方案
+   */
+  async createWxpay() {
+    const { ctx } = this;
+    const beforeOrder = await ctx.service.wxpay.wxbeforeOrder(ctx.request.body);
+    console.log(beforeOrder);
+    console.log("-------beforeOrder3333--------");
+    this.success(beforeOrder);
+  }
+
+  /**
+   * 微信商家回调
+   */
+  async callbackWx() {
+    const { ctx } = this;
+    const beforeOrder = await ctx.service.wxpay.callbackWx(ctx.request.body);
+    console.log(beforeOrder);
+    console.log("------callbackWx----");
+    this.success(beforeOrder);
+  }
+  /**
+   * code 换取openid
+   */
+  async wxCode2Session() {
+    const { ctx } = this;
+    const wxCode2Session = await ctx.service.wxpay.wxCode2Session(ctx.request.body);
+    console.log(wxCode2Session);
+    console.log("------wxCode2Session222---");
+    this.success(wxCode2Session);
+  }
+
+  /**
    * 登录
    * @return {function|null} 登录结果
    */
@@ -219,20 +269,24 @@ class WeappController extends Controller {
     const merchant = await ctx.service.user.merchant.get(orgUuid);
 
     if (app._.isEmpty(merchant)) {
-      return this.fail(ctx.ERROR_CODE, '该应用未绑定商家');
+      return this.fail(ctx.ERROR_CODE, "该应用未绑定商家");
     }
 
     // 登录凭证校验
-    const weappInfo = await ctx.curl(`https://api.weixin.qq.com/sns/jscode2session?appid=${merchant.appId}&secret=${merchant.appSecret}&js_code=${code}&grant_type=authorization_code`, {
-      dataType: 'json',
-    }) || {};
+    const weappInfo =
+      (await ctx.curl(
+        `https://api.weixin.qq.com/sns/jscode2session?appid=${merchant.appId}&secret=${merchant.appSecret}&js_code=${code}&grant_type=authorization_code`,
+        {
+          dataType: "json",
+        }
+      )) || {};
 
     const { openid: openId, session_key } = weappInfo.data || {};
 
     if (openId) {
       const result = JSON.stringify({ openId, session_key });
       // 保存openId和session_key到redis
-      await app.redis.get('default').setex(sessionid, 3600 * 24, result);
+      await app.redis.get("default").setex(sessionid, 3600 * 24, result);
     } else {
       return this.fail(ctx.ERROR_CODE, weappInfo.data.errmsg);
     }

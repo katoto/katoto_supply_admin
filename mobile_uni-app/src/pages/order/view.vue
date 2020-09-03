@@ -230,7 +230,8 @@
         this.pending = false;
         this.removeCart();
         await this.get(uuid);
-        this.pay();
+        // 之前是自动提示支付
+        // this.pay();
       },
       // 移除购物车中已下单的商品
       removeCart() {
