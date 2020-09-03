@@ -9,7 +9,7 @@
           :adjust-position="false"
           placeholder="订单编号"
           @confirm="search"
-        ></input>
+        />
         <view
           v-if="keywordsLike"
           class="action cuIcon-roundclosefill text-gray search-clear"
@@ -192,7 +192,8 @@ export default {
     // 支付
     pay(index) {
       const { uuid, version } = this.orderList[index] || {};
-
+        console.log(this.orderList[index]);
+        console.log(index);
       uni.showModal({
         title: '提示',
         content: '在线支付暂未实现，暂时只支持线下支付',

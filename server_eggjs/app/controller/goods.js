@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const Controller = require('../core/base_controller');
+const Controller = require("../core/base_controller");
 
 /**
  * Controller - 商品
@@ -14,7 +14,7 @@ class GoodsController extends Controller {
   async saveNew() {
     const { ctx } = this;
     const rule = {
-      goods: 'object',
+      goods: "object",
     };
     ctx.validate(rule);
     const uuid = await ctx.service.goods.saveNew(ctx.request.body);
@@ -27,7 +27,7 @@ class GoodsController extends Controller {
   async saveModify() {
     const { ctx } = this;
     const rule = {
-      goods: 'object',
+      goods: "object",
     };
     ctx.validate(rule);
     const uuid = await ctx.service.goods.saveModify(ctx.request.body);

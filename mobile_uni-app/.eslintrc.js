@@ -7,7 +7,7 @@ module.exports = {
 
     extends: [
         'plugin:vue/essential',
-        '@vue/airbnb',
+        // '@vue/airbnb',
     ],
     // 'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     rules: {
