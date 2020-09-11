@@ -21,6 +21,7 @@ module.exports = (options, app) => {
         "/weapp/getGoodsWithCategory",
         "/weapp/createWxpay",
         "/weapp/wxCode2Session",
+        "/weapp/callbackWx",
       ]; // 不需要登录的接口
 
       ctx.request.body.openId = openId;

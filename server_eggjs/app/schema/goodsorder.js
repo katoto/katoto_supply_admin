@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-module.exports = app => {
+module.exports = (app) => {
   const { STRING, BIGINT, DATE, DECIMAL, UUIDV1, ENUM } = app.Sequelize;
 
   return {
@@ -37,7 +37,7 @@ module.exports = app => {
     address: STRING(255),
     type: STRING(20),
     // initial: '待处理', audited: '已接单', dispatching: '配送中', completed: '已完成', canceled: '已取消'
-    status: ENUM('initial', 'audited', 'dispatching', 'completed', 'canceled'),
+    status: ENUM("initial", "audited", "dispatching", "completed", "canceled"),
     addressUuid: {
       type: STRING(38),
       allowNull: false,
@@ -92,6 +92,14 @@ module.exports = app => {
     version: {
       type: BIGINT,
       defaultValue: 0,
+    },
+    tradeId: {
+      type: STRING(76),
+      defaultValue: false,
+    },
+    sign: {
+      type: STRING(76),
+      defaultValue: false,
     },
   };
 };

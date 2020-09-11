@@ -225,14 +225,19 @@ class WeappController extends Controller {
   }
 
   /**
-   * 获取商家运费方案
+   * 创建微信端
    */
   async createWxpay() {
     const { ctx } = this;
     const beforeOrder = await ctx.service.wxpay.wxbeforeOrder(ctx.request.body);
     console.log(beforeOrder);
+    console.log(beforeOrder);
+    if (beforeOrder && beforeOrder.paySign) {
+      this.success(beforeOrder);
+    } else {
+      this.fail(beforeOrder);
+    }
     console.log("-------beforeOrder3333--------");
-    this.success(beforeOrder);
   }
 
   /**
@@ -241,18 +246,23 @@ class WeappController extends Controller {
   async callbackWx() {
     const { ctx } = this;
     const beforeOrder = await ctx.service.wxpay.callbackWx(ctx.request.body);
-    console.log(beforeOrder);
-    console.log("------callbackWx----");
-    this.success(beforeOrder);
+    // console.log(beforeOrder);
+    // console.log("------callbackWx----");
+    if (beforeOrder.type === "callback_wx") {
+      ctx.body = beforeOrder.data;
+      ctx.status = 200;
+    } else {
+      this.success(beforeOrder);
+    }
   }
   /**
    * code 换取openid
    */
   async wxCode2Session() {
     const { ctx } = this;
-    const wxCode2Session = await ctx.service.wxpay.wxCode2Session(ctx.request.body);
-    console.log(wxCode2Session);
-    console.log("------wxCode2Session222---");
+    const wxCode2Session = await ctx.service.wxpay.wxCode2Session(
+      ctx.request.body
+    );
     this.success(wxCode2Session);
   }
 
@@ -291,7 +301,10 @@ class WeappController extends Controller {
       return this.fail(ctx.ERROR_CODE, weappInfo.data.errmsg);
     }
 
-    this.success(sessionid);
+    this.success({
+        sessionid,
+        openId
+    });
   }
 }
 
