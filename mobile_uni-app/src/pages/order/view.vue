@@ -316,44 +316,54 @@ export default {
       uni.setStorageSync(this.$constants.CART, cart);
     },
     // 支付
-    pay() {
-      const { uuid, version } = this.order || {};
+    async pay() {
+      const { uuid, version, lines,totalAmount  } = this.order || {};
       console.log(this.order)
+      let _payParam = {
+          wx_openId: uni.getStorageSync('openid'),
+          productIntro: lines[0].goodsName,
+          uuid: uuid,
+        //   price: parseFloat(totalAmount) * 100,
+          price: parseFloat(totalAmount) * 1,
+      }
+      console.log(_payParam)
+      let _getPayment = await this.$api.order.createWxpay(_payParam);
+      console.log(_getPayment)
       wx.requestPayment({
-        "nonceStr": "2gZnEipOoFF4yMC3",
-        "timeStamp": "1599144560764",
-        "package": "prepay_id=wx03224921300230ff6d9a36d91977360000",
-        "paySign": "FEF7C207B980742C615AF3751813BED4",
-        "signType": "MD5",
-        "tradeId": "ty_GJS-ORG_159914455558589718",
+        "nonceStr": _getPayment.nonceStr || "2gZnEipOoFF4yMC3",
+        "timeStamp": _getPayment.timeStamp || "1599144560764",
+        "package": _getPayment.package || "prepay_id=wx03224921300230ff6d9a36d91977360000",
+        "paySign": _getPayment.paySign || "FEF7C207B980742C615AF3751813BED4",
+        "signType": _getPayment.signType || "MD5",
+        "tradeId": _getPayment.tradeId || "ty_GJS-ORG_159914455558589718",
         success: () => {
           console.log('succss')
+          uni.showToast({ title: '支付成功', icon: 'none' });
+          setTimeout(() => {
+            uni.navigateTo({ url: `/pages/order/result?tradeId=${_getPayment.tradeId}` });
+          }, 2500);
         },
         fail: res => {
-          console.log(global.miniProgram)
           // 微信支付取消
-          console.log('fail', res)
+          uni.showToast({ title: '取消支付', icon: 'none' });
         },
         complete: () => {
-          console.log('complete')
+          console.log('complete pay')
         }
       })
-
-
-
-      uni.showModal({
-        title: '提示',
-        content: '在线支付暂未实现，暂时只支持线下支付',
-        confirmText: '线下支付',
-        success: async (res) => {
-          if (res.confirm) {
-            await this.$api.order.auditBill({ uuid, version });
-            uni.showToast({ title: '订单审核成功', icon: 'none' });
-            getApp().globalData.refreshPage = true;
-            this.get(uuid);
-          }
-        },
-      });
+    //   uni.showModal({
+    //     title: '提示',
+    //     content: '在线支付暂未实现，暂时只支持线下支付',
+    //     confirmText: '线下支付',
+    //     success: async (res) => {
+    //       if (res.confirm) {
+    //         await this.$api.order.auditBill({ uuid, version });
+    //         uni.showToast({ title: '订单审核成功', icon: 'none' });
+    //         getApp().globalData.refreshPage = true;
+    //         this.get(uuid);
+    //       }
+    //     },
+    //   });
     },
     // 刷新地址,如果上次有选择地址，则使用该地址，否则使用默认地址
     refreshAddress() {

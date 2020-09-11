@@ -546,7 +546,7 @@ export default {
 
       &.has-number {
         .goods-item-content {
-          width: rpx(510 - 420) !important;
+          width: rpx(510 - 250) !important;
         }
       }
 

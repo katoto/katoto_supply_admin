@@ -9,6 +9,7 @@ import http from './http';
 export default {
     goods: {
         getGoodsWithCategory: (data, options) => http.get('weapp/getGoodsWithCategory', data, options), // 查询带类别的商品信息
+        wxCode2Session: (data, options) => http.get('weapp/wxCode2Session', data, options), // 换取openid
     },
     order: {
         getOrderBill: (data, options) => http.post('weapp/getOrderBill', data, options), // 获取订单
@@ -17,6 +18,8 @@ export default {
         auditBill: (data, options) => http.post('weapp/auditBill', data, options), // 审核订单
         cancelBill: (data, options) => http.post('weapp/cancelBill', data, options), // 取消订单
         completeBill: (data, options) => http.post('weapp/completeBill', data, options), // 完成订单
+        createWxpay: (data, options) => http.post('weapp/createWxpay', data, options), // 完成订单
+        
     },
     address: {
         getAddress: (data, options) => http.get('weapp/getAddress', data, options), // 获取地址

@@ -9,7 +9,8 @@ let baseUrl = ''; // H5用相对路径
 
 // #ifndef H5
 // baseUrl = 'http://192.168.0.102:7001/'; // 本地
-baseUrl = 'https://katoto.cn/api/'; // 非H5用绝对路径
+baseUrl = 'http://10.1.13.167:7001/'; // 本地2
+// baseUrl = 'https://katoto.cn/api/'; // 非H5用绝对路径
 // #endif
 
 export default {
